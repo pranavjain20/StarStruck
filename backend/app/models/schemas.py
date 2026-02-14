@@ -28,8 +28,12 @@ class CoachingCard(BaseModel):
 
 
 class CoachingResponse(BaseModel):
-    user_a_cards: list[CoachingCard]
-    user_b_cards: list[CoachingCard]
+    user_a_cards: list[CoachingCard] = []
+    user_b_cards: list[CoachingCard] = []
+    venues: list[dict] = []
+    coaching_a: dict = {}
+    coaching_b: dict = {}
+    cross_ref: dict = {}
 
 
 # ── New response models for frontend integration ─────────────
@@ -69,3 +73,7 @@ class MatchResult(BaseModel):
     private_profile: dict[str, Any]
     suggestion: dict[str, Any] | None = None
     cross_ref: dict[str, Any]
+
+
+class ProfileResponse(BaseModel):
+    dossier: dict
