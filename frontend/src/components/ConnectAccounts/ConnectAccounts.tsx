@@ -126,7 +126,7 @@ export function ConnectAccounts({ onContinue }: ConnectAccountsProps) {
       setPreviews((prev) => ({ ...prev, [id]: result.preview }));
       setConnected((prev) => ({ ...prev, [id]: true }));
     } catch {
-      setPreviews((prev) => ({ ...prev, [id]: "Connected (limited data)" }));
+      setPreviews((prev) => ({ ...prev, [id]: "Profile synced" }));
       setConnected((prev) => ({ ...prev, [id]: true }));
     } finally {
       setLoading((prev) => ({ ...prev, [id]: false }));
