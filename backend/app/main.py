@@ -115,7 +115,7 @@ async def analyze_user(request: AnalyzeRequest):
     except Exception as exc:
         logger.exception("Analyze failed: %s", exc)
         return AnalysisResult(
-            bio=f"Error: {type(exc).__name__}: {str(exc)[:200]}",
+            bio="",
             findings=[],
             tags=[],
             schedule="mixed",
