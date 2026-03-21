@@ -94,21 +94,33 @@ async def connect_service(request: ConnectRequest):
 @app.post("/api/analyze", response_model=AnalysisResult)
 async def analyze_user(request: AnalyzeRequest):
     """Run all connectors + LLM analysis for one user."""
-    raw_data = await _fetch_user_data(request.identifiers)
+    try:
+        raw_data = await _fetch_user_data(request.identifiers)
+        logger.info("Raw data keys: %s", list(raw_data.keys()))
 
-    llm = LLMService()
-    dossier = await llm.profile_analysis(raw_data)
+        llm = LLMService()
+        dossier = await llm.profile_analysis(raw_data)
+        logger.info("Dossier keys: %s", list(dossier.keys()))
 
-    public = dossier.get("public", {})
-    findings = generate_findings(dossier, raw_data)
+        public = dossier.get("public", {})
+        findings = generate_findings(dossier, raw_data)
 
-    return AnalysisResult(
-        bio=public.get("vibe", ""),
-        findings=findings,
-        tags=public.get("tags", []),
-        schedule=public.get("schedule_pattern", "mixed"),
-        dossier=dossier,
-    )
+        return AnalysisResult(
+            bio=public.get("vibe", ""),
+            findings=findings,
+            tags=public.get("tags", []),
+            schedule=public.get("schedule_pattern", "mixed"),
+            dossier=dossier,
+        )
+    except Exception as exc:
+        logger.exception("Analyze failed: %s", exc)
+        return AnalysisResult(
+            bio="",
+            findings=[],
+            tags=[],
+            schedule="mixed",
+            dossier={},
+        )
 
 
 @app.post("/api/match", response_model=MatchResult)
