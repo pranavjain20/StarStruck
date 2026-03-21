@@ -1521,8 +1521,10 @@ export function SwipeScreen({ userPhoto, userName }: { userPhoto?: string | null
   const handleSwipeRight = useCallback(() => {
     const swipedProfile = MOCK_PROFILES[currentIndex];
     setCurrentIndex((prev) => prev + 1);
-    if (swipedProfile?.name === PRIYA_NAME) {
-      const matchData = MATCHES.find((m) => m.name === PRIYA_NAME);
+    if (swipedProfile) {
+      // Find a matching detail profile, or pick a random one
+      const matchData = MATCHES.find((m) => m.name === swipedProfile.name)
+        || MATCHES[Math.floor(Math.random() * MATCHES.length)];
       if (matchData) {
         setMatchOverlay(matchData);
         setMatchShowText(false);
