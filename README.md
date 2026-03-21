@@ -2,7 +2,7 @@
 
 AI-powered dating app that builds personality profiles from your real online presence. Connect your accounts, and the pipeline scrapes, analyzes, and matches you based on who you actually are — not a curated bio.
 
-**[Live Demo](https://starstruck-eta.vercel.app)** · **[API](https://starstruck.onrender.com/health)**
+**[Live Demo](https://starstruck-eta.vercel.app)**
 
 ## How It Works
 
