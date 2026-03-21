@@ -77,7 +77,7 @@ async def connect_service(request: ConnectRequest):
     try:
         connector = connector_cls()
         data = await connector.fetch(request.username)
-        preview = generate_preview(request.service, data)
+        preview = generate_preview(request.service, data, request.username)
         avatar_url = data.get("avatar_url") or None
         display_name = data.get("display_name") or data.get("name") or None
         return ConnectResponse(

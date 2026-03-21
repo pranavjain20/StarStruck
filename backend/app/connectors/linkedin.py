@@ -77,6 +77,18 @@ class LinkedInConnector(BaseConnector):
                     except Exception:
                         pass
 
+                    # Profile image from og:image meta tag
+                    try:
+                        og_img = await page.query_selector(
+                            'meta[property="og:image"]'
+                        )
+                        if og_img:
+                            result["og_image"] = (
+                                await og_img.get_attribute("content") or ""
+                            )
+                    except Exception:
+                        pass
+
                     # Headline — the text right below the name
                     try:
                         headline_el = await page.query_selector(
@@ -129,9 +141,12 @@ class LinkedInConnector(BaseConnector):
         # Meta description often has "about" info
         about = meta if meta else ""
 
+        og_image = raw.get("og_image", "")
+
         return {
             "name": name,
             "headline": headline,
             "about": about,
+            "avatar_url": og_image if og_image and not hit_login_wall else "",
             "login_wall": hit_login_wall,
         }

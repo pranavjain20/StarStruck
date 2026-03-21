@@ -29,19 +29,21 @@ def spotify_preview(data: dict) -> str:
     return f"Top artist: {top}"
 
 
-def instagram_preview(data: dict) -> str:
+def instagram_preview(data: dict, username: str = "") -> str:
     bio = data.get("bio", "")
     if not bio:
-        return "Profile synced"
+        return f"@{username}" if username else "Profile connected"
     return bio[:50] + "…" if len(bio) > 50 else bio
 
 
-def linkedin_preview(data: dict) -> str:
+def linkedin_preview(data: dict, username: str = "") -> str:
     name = data.get("name", "")
     headline = data.get("headline", "")
     if headline:
         return f"{name} · {headline}" if name else headline
-    return name or "Profile synced"
+    if name:
+        return name
+    return f"linkedin.com/in/{username}" if username else "Profile connected"
 
 
 PREVIEW_GENERATORS: dict[str, callable] = {
@@ -53,8 +55,11 @@ PREVIEW_GENERATORS: dict[str, callable] = {
 }
 
 
-def generate_preview(service: str, data: dict) -> str:
+def generate_preview(service: str, data: dict, username: str = "") -> str:
     gen = PREVIEW_GENERATORS.get(service)
     if gen:
-        return gen(data)
+        try:
+            return gen(data, username)
+        except TypeError:
+            return gen(data)
     return "Connected"
