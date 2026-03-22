@@ -83,7 +83,7 @@ export function ProfileAnalysis({ onContinue, identifiers }: ProfileAnalysisProp
           "Music": COLORS.limeCreem,
           "Film": COLORS.brightAmber,
           "Code": COLORS.softPeriwinkle,
-          "Social": COLORS.hotFuchsia,
+          "Social": COLORS.softPeriwinkle,
           "Career": COLORS.softPeriwinkle,
         };
         setFindings(result.findings.map((f) => ({
