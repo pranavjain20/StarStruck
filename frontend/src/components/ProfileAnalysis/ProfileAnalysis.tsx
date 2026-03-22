@@ -7,6 +7,7 @@ import { analyzeUser, type AnalysisResult } from "../../services/api";
 interface ProfileAnalysisProps {
   onContinue: () => void;
   identifiers?: Record<string, string | null>;
+  demoMode?: boolean;
 }
 
 const ANALYSIS_STEPS = [
@@ -61,7 +62,7 @@ function RefreshIcon({ size = 18, color = "currentColor" }: { size?: number; col
   );
 }
 
-export function ProfileAnalysis({ onContinue, identifiers }: ProfileAnalysisProps) {
+export function ProfileAnalysis({ onContinue, identifiers, demoMode }: ProfileAnalysisProps) {
   const [analyzing, setAnalyzing] = useState(true);
   const [progress, setProgress] = useState(0);
   const [stepIndex, setStepIndex] = useState(0);
@@ -72,7 +73,7 @@ export function ProfileAnalysis({ onContinue, identifiers }: ProfileAnalysisProp
   const fetchedRef = useRef(false);
 
   useEffect(() => {
-    if (!identifiers || fetchedRef.current) return;
+    if (demoMode || !identifiers || fetchedRef.current) return;
     fetchedRef.current = true;
 
     analyzeUser(identifiers).then((result: AnalysisResult) => {
@@ -100,7 +101,8 @@ export function ProfileAnalysis({ onContinue, identifiers }: ProfileAnalysisProp
   useEffect(() => {
     if (!analyzing) return;
 
-    const stepDuration = 8000 / ANALYSIS_STEPS.length;
+    const totalDuration = demoMode ? 3000 : 8000;
+    const stepDuration = totalDuration / ANALYSIS_STEPS.length;
     const stepInterval = setInterval(() => {
       setStepIndex((prev) => {
         if (prev >= ANALYSIS_STEPS.length - 1) {
@@ -119,7 +121,7 @@ export function ProfileAnalysis({ onContinue, identifiers }: ProfileAnalysisProp
         }
         return prev + 1;
       });
-    }, 80);
+    }, demoMode ? 30 : 80);
 
     return () => {
       clearInterval(stepInterval);
