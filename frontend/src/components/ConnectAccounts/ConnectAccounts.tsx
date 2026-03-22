@@ -4,12 +4,12 @@ import { styles, COLORS } from "./styles";
 import { ServiceCard } from "./ServiceCard";
 import { SignalStrength } from "./SignalStrength";
 import { BottomSheet } from "./BottomSheet";
-import { ChevronLeftIcon, FilmIcon, CodeIcon, CameraIcon, LinkedInIcon } from "./icons";
+import { ChevronLeftIcon, FilmIcon, CodeIcon, CameraIcon } from "./icons";
 import { connectService } from "../../services/api";
 
 // ── Service definitions ──
 
-type ServiceId = "letterboxd" | "github" | "instagram" | "linkedin";
+type ServiceId = "github" | "instagram" | "letterboxd";
 
 interface ServiceDef {
   id: ServiceId;
@@ -25,17 +25,6 @@ interface ServiceDef {
 
 const SERVICES: ServiceDef[] = [
   {
-    id: "letterboxd",
-    name: "Letterboxd",
-    description: "Film taste & reviews",
-    icon: <FilmIcon size={24} color="#BB97FF" />,
-    brandColor: "#00E054",
-    accentColor: "#00E054",
-    required: false,
-    signalWeight: 15,
-    mockPreview: "142 films \u00b7 avg rating 3.8\u2605",
-  },
-  {
     id: "github",
     name: "GitHub",
     description: "Projects & coding schedule",
@@ -43,7 +32,7 @@ const SERVICES: ServiceDef[] = [
     brandColor: "#8B949E",
     accentColor: COLORS.softPeriwinkle,
     required: false,
-    signalWeight: 15,
+    signalWeight: 30,
     mockPreview: "23 repos \u00b7 mostly TypeScript",
   },
   {
@@ -54,19 +43,19 @@ const SERVICES: ServiceDef[] = [
     brandColor: "#E1306C",
     accentColor: COLORS.hotFuchsia,
     required: false,
-    signalWeight: 15,
+    signalWeight: 25,
     mockPreview: "@username \u00b7 aesthetic captured",
   },
   {
-    id: "linkedin",
-    name: "LinkedIn",
-    description: "Career & professional interests",
-    icon: <LinkedInIcon size={24} color="#BB97FF" />,
-    brandColor: "#0A66C2",
-    accentColor: COLORS.brightAmber,
+    id: "letterboxd",
+    name: "Letterboxd",
+    description: "Film taste & reviews",
+    icon: <FilmIcon size={24} color="#BB97FF" />,
+    brandColor: "#00E054",
+    accentColor: "#00E054",
     required: false,
-    signalWeight: 15,
-    mockPreview: "Product Designer \u00b7 500+ connections",
+    signalWeight: 20,
+    mockPreview: "142 films \u00b7 avg rating 3.8\u2605",
   },
 ];
 
@@ -78,43 +67,33 @@ interface ConnectAccountsProps {
 
 export function ConnectAccounts({ onContinue }: ConnectAccountsProps) {
   const [connected, setConnected] = useState<Record<ServiceId, boolean>>({
-    spotify: false,
-    letterboxd: false,
     github: false,
     instagram: false,
-    linkedin: false,
+    letterboxd: false,
   });
 
   const [loading, setLoading] = useState<Record<ServiceId, boolean>>({
-    spotify: false,
-    letterboxd: false,
     github: false,
     instagram: false,
-    linkedin: false,
+    letterboxd: false,
   });
 
   const [previews, setPreviews] = useState<Record<ServiceId, string>>({
-    spotify: "",
-    letterboxd: "",
     github: "",
     instagram: "",
-    linkedin: "",
+    letterboxd: "",
   });
 
   const [avatars, setAvatars] = useState<Record<ServiceId, string | null>>({
-    spotify: null,
-    letterboxd: null,
     github: null,
     instagram: null,
-    linkedin: null,
+    letterboxd: null,
   });
 
   const [usernames, setUsernames] = useState<Record<ServiceId, string | null>>({
-    spotify: null,
-    letterboxd: null,
     github: null,
     instagram: null,
-    linkedin: null,
+    letterboxd: null,
   });
 
   const [sheetService, setSheetService] = useState<ServiceDef | null>(null);
@@ -198,6 +177,7 @@ export function ConnectAccounts({ onContinue }: ConnectAccountsProps) {
                 onDisconnect={() => handleDisconnect(service.id)}
                 dataPreview={previews[service.id] || service.mockPreview}
                 avatarUrl={avatars[service.id] || undefined}
+                loadingText={service.id === "instagram" ? "scanning profile..." : undefined}
                 index={i}
               />
             ))}

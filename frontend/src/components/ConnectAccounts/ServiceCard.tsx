@@ -14,6 +14,7 @@ interface ServiceCardProps {
   onDisconnect: () => void;
   dataPreview?: string;
   avatarUrl?: string;
+  loadingText?: string;
   index: number;
 }
 
@@ -29,6 +30,7 @@ export function ServiceCard({
   onDisconnect,
   dataPreview,
   avatarUrl,
+  loadingText,
   index,
 }: ServiceCardProps) {
   const card: CSSProperties = {
@@ -147,11 +149,13 @@ export function ServiceCard({
       {/* Right action */}
       {isLoading ? (
         <div style={{
-          fontSize: 12,
+          fontSize: 11,
           color: SURFACE.textSecondary,
           fontFamily: FONT_MONO,
+          textAlign: "right",
+          maxWidth: 80,
         }}>
-          ...
+          {loadingText || "connecting..."}
         </div>
       ) : isConnected ? (
         <div className="check-enter" style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
