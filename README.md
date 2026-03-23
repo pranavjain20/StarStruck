@@ -131,4 +131,4 @@ pytest tests/ -v
 
 ## Author
 
-Built by Pranav Jain.
+Built by Pranav Jain at Columbia University's Valentine's Day AI Hackathon.
