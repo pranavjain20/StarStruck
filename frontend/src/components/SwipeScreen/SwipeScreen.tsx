@@ -2,7 +2,7 @@ import { useState, useCallback, type CSSProperties } from "react";
 import "../ConnectAccounts/connectAccounts.css";
 import { COLORS, SURFACE, FONT_FAMILY, FONT_MONO } from "../ConnectAccounts/styles";
 import { SwipeCard, HeartIcon, XMarkIcon, StarIcon } from "./SwipeCard";
-import { runPipeline, API_BASE } from "../../services/api";
+import { API_BASE } from "../../services/api";
 
 type Tab = "swipe" | "matches" | "dates" | "profile";
 
@@ -572,7 +572,7 @@ const ANALYSIS_MSGS = [
 
 type MatchPhase = "grid" | "confirm" | "analyzing" | "suggestion" | "sent";
 
-function MatchesView({ initialPlanIdx, onClearInitial, userName, identifiers }: { initialPlanIdx?: number | null; onClearInitial?: () => void; userName?: string; identifiers?: Record<string, string | null> }) {
+function MatchesView({ initialPlanIdx, onClearInitial }: { initialPlanIdx?: number | null; onClearInitial?: () => void }) {
   const [phase, setPhase] = useState<MatchPhase>(initialPlanIdx != null ? "confirm" : "grid");
   const [selectedIdx, setSelectedIdx] = useState<number | null>(initialPlanIdx ?? null);
 
@@ -591,7 +591,7 @@ function MatchesView({ initialPlanIdx, onClearInitial, userName, identifiers }: 
     setPhase("confirm");
   };
 
-  const startPlanning = async () => {
+  const startPlanning = () => {
     setPhase("analyzing");
     setAnalysisStep(0);
     setAnalysisProgress(0);
@@ -602,44 +602,21 @@ function MatchesView({ initialPlanIdx, onClearInitial, userName, identifiers }: 
     }, stepDuration);
 
     const progressInterval = setInterval(() => {
-      setAnalysisProgress((prev) => (prev >= 100 ? 100 : prev + 5));
-    }, 100);
+      setAnalysisProgress((prev) => {
+        if (prev >= 100) {
+          clearInterval(progressInterval);
+          return 100;
+        }
+        return prev + 5;
+      });
+    }, 60);
 
-    try {
-      const request = {
-        user_a: {
-          spotify_username: identifiers?.spotify || userName?.toLowerCase() || "user",
-          letterboxd_username: identifiers?.letterboxd || userName?.toLowerCase() || "user",
-          github_username: identifiers?.github || undefined,
-          location: "New York, NY"
-        },
-        user_b: {
-          spotify_username: selected?.name.toLowerCase(),
-          letterboxd_username: selected?.name.toLowerCase(),
-          location: "New York, NY"
-        },
-        include_venue: true
-      };
-
-      const result = await runPipeline(request);
-
-      if (selected && result.venues.length > 0) {
-        const topVenue = result.venues[0];
-        selected.suggestion = {
-          place: topVenue.name,
-          address: topVenue.address || "Local area",
-          date: "TBD",
-          reason: topVenue.reason
-        };
-      }
-    } catch (err) {
-      console.error("Pipeline request failed:", err);
-    } finally {
+    setTimeout(() => {
       clearInterval(stepInterval);
       clearInterval(progressInterval);
       setAnalysisProgress(100);
       setPhase("suggestion");
-    }
+    }, 2500);
   };
 
   if (phase === "confirm" && selected) {
@@ -1802,8 +1779,6 @@ export function SwipeScreen({ userPhoto, userName, analysisData, identifiers }: 
           <MatchesView
             initialPlanIdx={planDateIdx}
             onClearInitial={() => setPlanDateIdx(null)}
-            userName={userName}
-            identifiers={identifiers}
           />
         )}
         {activeTab === "matches" && viewingProfile && (
