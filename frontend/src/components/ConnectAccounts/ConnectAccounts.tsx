@@ -63,9 +63,10 @@ const SERVICES: ServiceDef[] = [
 
 interface ConnectAccountsProps {
   onContinue?: (identifiers: Record<string, string | null>, profileName?: string, profilePhoto?: string) => void;
+  onBack?: () => void;
 }
 
-export function ConnectAccounts({ onContinue }: ConnectAccountsProps) {
+export function ConnectAccounts({ onContinue, onBack }: ConnectAccountsProps) {
   const [connected, setConnected] = useState<Record<ServiceId, boolean>>({
     github: false,
     instagram: false,
@@ -123,7 +124,7 @@ export function ConnectAccounts({ onContinue }: ConnectAccountsProps) {
     } finally {
       setLoading((prev) => ({ ...prev, [id]: false }));
     }
-  }, []);
+  }, [profileName, profilePhoto]);
 
   const handleConnect = useCallback((service: ServiceDef) => {
     setSheetService(service);
@@ -147,7 +148,7 @@ export function ConnectAccounts({ onContinue }: ConnectAccountsProps) {
           {/* ── Header ── */}
           <header style={styles.header}>
             <div style={{ display: "flex", alignItems: "center", marginBottom: 16 }}>
-              <button style={{ ...styles.backButton, marginBottom: 0 }}>
+              <button onClick={onBack} style={{ ...styles.backButton, marginBottom: 0 }}>
                 <ChevronLeftIcon size={24} color="rgba(255,255,255,0.5)" />
               </button>
               <img

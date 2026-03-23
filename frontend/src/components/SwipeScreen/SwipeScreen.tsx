@@ -572,7 +572,7 @@ const ANALYSIS_MSGS = [
 
 type MatchPhase = "grid" | "confirm" | "analyzing" | "suggestion" | "sent";
 
-function MatchesView({ initialPlanIdx, onClearInitial, userName }: { initialPlanIdx?: number | null; onClearInitial?: () => void; userName?: string }) {
+function MatchesView({ initialPlanIdx, onClearInitial, userName, identifiers }: { initialPlanIdx?: number | null; onClearInitial?: () => void; userName?: string; identifiers?: Record<string, string | null> }) {
   const [phase, setPhase] = useState<MatchPhase>(initialPlanIdx != null ? "confirm" : "grid");
   const [selectedIdx, setSelectedIdx] = useState<number | null>(initialPlanIdx ?? null);
 
@@ -608,8 +608,9 @@ function MatchesView({ initialPlanIdx, onClearInitial, userName }: { initialPlan
     try {
       const request = {
         user_a: {
-          spotify_username: userName?.toLowerCase() || "user",
-          letterboxd_username: userName?.toLowerCase() || "user",
+          spotify_username: identifiers?.spotify || userName?.toLowerCase() || "user",
+          letterboxd_username: identifiers?.letterboxd || userName?.toLowerCase() || "user",
+          github_username: identifiers?.github || undefined,
           location: "New York, NY"
         },
         user_b: {
@@ -935,7 +936,7 @@ function SendIcon({ size = 20, color = "currentColor" }: { size?: number; color?
   );
 }
 
-function DateDetailView({ dateEntry, userName, onBack }: { dateEntry: DateEntry; userName: string; onBack: () => void }) {
+function DateDetailView({ dateEntry, userName, onBack, analysisData }: { dateEntry: DateEntry; userName: string; onBack: () => void; analysisData?: { bio: string; tags: string[]; findings: { label: string; value: string; detail: string }[] } | null }) {
   const match = dateEntry.matchRef;
   const pub = match.publicProfile;
   const priv = match.privateProfile;
@@ -967,11 +968,23 @@ function DateDetailView({ dateEntry, userName, onBack }: { dateEntry: DateEntry;
         body: JSON.stringify({
           user_a_name: userName || "User",
           user_b_name: match.name,
-          user_a_dossier: {
+          user_a_dossier: analysisData ? {
+            public: {
+              vibe: analysisData.bio,
+              tags: analysisData.tags,
+              schedule_pattern: "flexible",
+            },
+            private: {
+              summary: analysisData.bio,
+              traits: analysisData.tags.slice(0, 3),
+              interests: analysisData.findings.map(f => f.value),
+              deep_cuts: analysisData.findings.map(f => f.detail),
+            },
+          } : {
             public: {
               vibe: "Curious and creative with eclectic taste",
               tags: ["tech", "music", "film", "culture"],
-              schedule_pattern: "night_owl",
+              schedule_pattern: "flexible",
             },
             private: {
               summary: "Someone exploring new connections and shared interests.",
@@ -1425,7 +1438,14 @@ function DatesView({ onSelectDate }: { onSelectDate: (d: DateEntry) => void }) {
   );
 }
 
-function ProfileView({ userName, userPhoto }: { userName?: string; userPhoto?: string | null }) {
+function ProfileView({ userName, userPhoto, analysisData, identifiers }: {
+  userName?: string;
+  userPhoto?: string | null;
+  analysisData?: { bio: string; tags: string[]; findings: { label: string; value: string; detail: string }[] } | null;
+  identifiers?: Record<string, string | null>;
+}) {
+  const findingColors = [COLORS.limeCreem, COLORS.brightAmber, COLORS.softPeriwinkle];
+
   return (
     <div style={{ padding: "0 24px", flex: 1, overflowY: "auto" }}>
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: 28 }}>
@@ -1451,37 +1471,206 @@ function ProfileView({ userName, userPhoto }: { userName?: string; userPhoto?: s
         <span style={{ fontSize: 13, color: SURFACE.textSecondary, marginTop: 4 }}>StarStruck Member</span>
       </div>
 
-      {[
-        { label: "Photos", value: "Manage" },
-        { label: "Bio", value: "Tap to update" },
-        { label: "Connected Accounts", value: "View" },
-        { label: "Vibe Tags", value: "Edit" },
-      ].map((item, i) => (
-        <div
-          key={item.label}
-          className="card-enter"
-          style={{
+      {analysisData ? (
+        <>
+          {/* Bio section */}
+          <div style={{
+            fontSize: 11,
+            fontWeight: 700,
+            color: SURFACE.textTertiary,
+            textTransform: "uppercase",
+            fontFamily: FONT_MONO,
+            letterSpacing: 1.5,
+            marginBottom: 10,
+          }}>
+            Your Vibe
+          </div>
+          <div style={{
             background: "#5823A5",
             border: `1px solid ${SURFACE.border}`,
-            borderRadius: 16,
-            padding: "16px 20px",
-            marginBottom: 10,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            cursor: "pointer",
-            animationDelay: `${i * 0.05}s`,
-          }}
-        >
-          <span style={{ fontSize: 15, fontWeight: 600, color: SURFACE.textPrimary }}>{item.label}</span>
-          <span style={{ fontSize: 13, color: SURFACE.textSecondary }}>{item.value} ›</span>
-        </div>
-      ))}
+            borderRadius: 20,
+            padding: 20,
+            marginBottom: 20,
+          }}>
+            <div style={{ fontSize: 15, color: SURFACE.textPrimary, fontStyle: "italic", lineHeight: 1.5 }}>
+              &ldquo;{analysisData.bio}&rdquo;
+            </div>
+          </div>
+
+          {/* Findings cards */}
+          {analysisData.findings.length > 0 && (
+            <>
+              <div style={{
+                fontSize: 11,
+                fontWeight: 700,
+                color: SURFACE.textTertiary,
+                textTransform: "uppercase",
+                fontFamily: FONT_MONO,
+                letterSpacing: 1.5,
+                marginBottom: 10,
+                marginTop: 4,
+              }}>
+                Key Findings
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 20 }}>
+                {analysisData.findings.map((f, i) => {
+                  const accentColor = findingColors[Math.min(i, findingColors.length - 1)];
+                  return (
+                    <div
+                      key={f.label + i}
+                      className="card-enter"
+                      style={{
+                        background: "#5823A5",
+                        border: `1px solid ${SURFACE.border}`,
+                        borderRadius: 16,
+                        padding: "14px 16px 14px 20px",
+                        position: "relative",
+                        overflow: "hidden",
+                        animationDelay: `${i * 0.05}s`,
+                      }}
+                    >
+                      <div style={{
+                        position: "absolute",
+                        left: 0,
+                        top: 0,
+                        bottom: 0,
+                        width: 4,
+                        background: accentColor,
+                        borderRadius: "16px 0 0 16px",
+                      }} />
+                      <div style={{
+                        fontSize: 10,
+                        fontFamily: FONT_MONO,
+                        fontWeight: 700,
+                        color: accentColor,
+                        textTransform: "uppercase",
+                        letterSpacing: 1.5,
+                        marginBottom: 4,
+                      }}>
+                        {f.label}
+                      </div>
+                      <div style={{ fontSize: 15, fontWeight: 700, color: SURFACE.textPrimary, marginBottom: 4 }}>
+                        {f.value}
+                      </div>
+                      <div style={{ fontSize: 13, color: SURFACE.textSecondary, lineHeight: 1.5 }}>
+                        {f.detail}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          )}
+
+          {/* Vibe Tags */}
+          {analysisData.tags.length > 0 && (
+            <>
+              <div style={{
+                fontSize: 11,
+                fontWeight: 700,
+                color: SURFACE.textTertiary,
+                textTransform: "uppercase",
+                fontFamily: FONT_MONO,
+                letterSpacing: 1.5,
+                marginBottom: 10,
+                marginTop: 4,
+              }}>
+                Vibe Tags
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 20 }}>
+                {analysisData.tags.map((tag) => (
+                  <span key={tag} style={{
+                    fontSize: 12,
+                    fontWeight: 600,
+                    color: COLORS.softPeriwinkle,
+                    background: `${COLORS.softPeriwinkle}1A`,
+                    padding: "5px 12px",
+                    borderRadius: 20,
+                    border: `1px solid ${COLORS.softPeriwinkle}30`,
+                  }}>
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </>
+          )}
+
+          {/* Connected Accounts */}
+          {identifiers && Object.entries(identifiers).some(([, v]) => v != null) && (
+            <>
+              <div style={{
+                fontSize: 11,
+                fontWeight: 700,
+                color: SURFACE.textTertiary,
+                textTransform: "uppercase",
+                fontFamily: FONT_MONO,
+                letterSpacing: 1.5,
+                marginBottom: 10,
+                marginTop: 4,
+              }}>
+                Connected Accounts
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 20 }}>
+                {Object.entries(identifiers)
+                  .filter(([, v]) => v != null)
+                  .map(([service]) => (
+                    <span key={service} style={{
+                      fontSize: 11,
+                      fontFamily: FONT_MONO,
+                      fontWeight: 600,
+                      color: COLORS.limeCreem,
+                      background: `${COLORS.limeCreem}15`,
+                      padding: "4px 12px",
+                      borderRadius: 10,
+                      textTransform: "uppercase",
+                      letterSpacing: 0.5,
+                    }}>
+                      {service}
+                    </span>
+                  ))}
+              </div>
+            </>
+          )}
+        </>
+      ) : (
+        <>
+          {[
+            { label: "Photos", value: "Manage" },
+            { label: "Connected Accounts", value: "View" },
+            { label: "Vibe Tags", value: "Edit" },
+          ].map((item, i) => (
+            <div
+              key={item.label}
+              className="card-enter"
+              style={{
+                background: "#5823A5",
+                border: `1px solid ${SURFACE.border}`,
+                borderRadius: 16,
+                padding: "16px 20px",
+                marginBottom: 10,
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                cursor: "pointer",
+                animationDelay: `${i * 0.05}s`,
+              }}
+            >
+              <span style={{ fontSize: 15, fontWeight: 600, color: SURFACE.textPrimary }}>{item.label}</span>
+              <span style={{ fontSize: 13, color: SURFACE.textSecondary }}>{item.value} ›</span>
+            </div>
+          ))}
+        </>
+      )}
     </div>
   );
 }
 
-export function SwipeScreen({ userPhoto, userName }: { userPhoto?: string | null; userName?: string }) {
+export function SwipeScreen({ userPhoto, userName, analysisData, identifiers }: {
+  userPhoto?: string | null;
+  userName?: string;
+  analysisData?: { bio: string; tags: string[]; findings: { label: string; value: string; detail: string }[] } | null;
+  identifiers?: Record<string, string | null>;
+}) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [activeTab, setActiveTab] = useState<Tab>("swipe");
   const [matchOverlay, setMatchOverlay] = useState<MatchProfile | null>(null);
@@ -1499,9 +1688,7 @@ export function SwipeScreen({ userPhoto, userName }: { userPhoto?: string | null
     const swipedProfile = MOCK_PROFILES[currentIndex];
     setCurrentIndex((prev) => prev + 1);
     if (swipedProfile) {
-      // Find a matching detail profile, or pick a random one
-      const matchData = MATCHES.find((m) => m.name === swipedProfile.name)
-        || MATCHES[Math.floor(Math.random() * MATCHES.length)];
+      const matchData = MATCHES.find((m) => m.name === swipedProfile.name);
       if (matchData) {
         setMatchOverlay(matchData);
         setMatchShowText(false);
@@ -1616,6 +1803,7 @@ export function SwipeScreen({ userPhoto, userName }: { userPhoto?: string | null
             initialPlanIdx={planDateIdx}
             onClearInitial={() => setPlanDateIdx(null)}
             userName={userName}
+            identifiers={identifiers}
           />
         )}
         {activeTab === "matches" && viewingProfile && (
@@ -1630,8 +1818,8 @@ export function SwipeScreen({ userPhoto, userName }: { userPhoto?: string | null
           />
         )}
         {activeTab === "dates" && !selectedDate && <DatesView onSelectDate={(d) => setSelectedDate(d)} />}
-        {activeTab === "dates" && selectedDate && <DateDetailView dateEntry={selectedDate} userName={userName || ""} onBack={() => setSelectedDate(null)} />}
-        {activeTab === "profile" && <ProfileView userName={userName} userPhoto={userPhoto} />}
+        {activeTab === "dates" && selectedDate && <DateDetailView dateEntry={selectedDate} userName={userName || ""} onBack={() => setSelectedDate(null)} analysisData={analysisData} />}
+        {activeTab === "profile" && <ProfileView userName={userName} userPhoto={userPhoto} analysisData={analysisData} identifiers={identifiers} />}
 
         {/* ── Match count ── */}
         {!noMoreCards && activeTab === "swipe" && (

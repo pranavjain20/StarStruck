@@ -11,6 +11,7 @@ export default function App() {
   const [userPhoto, setUserPhoto] = useState<string | null>(null);
   const [userName, setUserName] = useState("");
   const [identifiers, setIdentifiers] = useState<Record<string, string | null>>({});
+  const [analysisData, setAnalysisData] = useState<{ bio: string; tags: string[]; findings: { label: string; value: string; detail: string }[] } | null>(null);
 
   if (step === 0) return (
     <Landing
@@ -18,8 +19,8 @@ export default function App() {
       onTryDemo={() => { setDemoMode(true); setUserName("Alex"); setStep(3); }}
     />
   );
-  if (step === 1) return <PhotoUpload onContinue={(photos, name) => { setUserPhoto(photos[0] ?? null); setUserName(name); setStep(2); }} />;
-  if (step === 2) return <ConnectAccounts onContinue={(ids, name, photo) => { setIdentifiers(ids); if (name) setUserName(name.split(" ")[0]); if (photo) setUserPhoto(photo); setStep(3); }} />;
-  if (step === 3) return <ProfileAnalysis onContinue={() => setStep(4)} identifiers={identifiers} demoMode={demoMode} />;
-  return <SwipeScreen userPhoto={userPhoto} userName={userName} />;
+  if (step === 1) return <PhotoUpload onBack={() => setStep(0)} onContinue={(photos, name) => { setUserPhoto(photos[0] ?? null); setUserName(name); setStep(2); }} />;
+  if (step === 2) return <ConnectAccounts onBack={() => setStep(1)} onContinue={(ids, name, photo) => { setIdentifiers(ids); if (name) setUserName(name.split(" ")[0]); if (photo) setUserPhoto(photo); setStep(3); }} />;
+  if (step === 3) return <ProfileAnalysis onBack={() => setStep(2)} onContinue={(data) => { setAnalysisData(data); setStep(4); }} identifiers={identifiers} demoMode={demoMode} />;
+  return <SwipeScreen userPhoto={userPhoto} userName={userName} analysisData={analysisData} identifiers={identifiers} />;
 }

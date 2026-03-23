@@ -7,6 +7,7 @@ const MAX_PHOTOS = 6;
 
 interface PhotoUploadProps {
   onContinue: (photos: string[], name: string) => void;
+  onBack?: () => void;
 }
 
 function PlusIcon({ size = 24, color = "currentColor" }: { size?: number; color?: string }) {
@@ -27,7 +28,7 @@ function XIcon({ size = 16, color = "currentColor" }: { size?: number; color?: s
   );
 }
 
-export function PhotoUpload({ onContinue }: PhotoUploadProps) {
+export function PhotoUpload({ onContinue, onBack }: PhotoUploadProps) {
   const [photos, setPhotos] = useState<string[]>([]);
   const [name, setName] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -66,7 +67,7 @@ export function PhotoUpload({ onContinue }: PhotoUploadProps) {
         <div style={styles.scrollArea}>
           <header style={styles.header}>
             <div style={{ display: "flex", alignItems: "center", marginBottom: 16 }}>
-              <button style={{ ...styles.backButton, marginBottom: 0 }}>
+              <button onClick={onBack} style={{ ...styles.backButton, marginBottom: 0 }}>
                 <ChevronLeftIcon size={24} color="rgba(255,255,255,0.5)" />
               </button>
               <img

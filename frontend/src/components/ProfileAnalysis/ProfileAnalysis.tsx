@@ -5,7 +5,8 @@ import { ChevronLeftIcon } from "../ConnectAccounts/icons";
 import { analyzeUser, type AnalysisResult } from "../../services/api";
 
 interface ProfileAnalysisProps {
-  onContinue: () => void;
+  onContinue: (data: { bio: string; tags: string[]; findings: { label: string; value: string; detail: string }[] }) => void;
+  onBack?: () => void;
   identifiers?: Record<string, string | null>;
   demoMode?: boolean;
 }
@@ -62,7 +63,7 @@ function RefreshIcon({ size = 18, color = "currentColor" }: { size?: number; col
   );
 }
 
-export function ProfileAnalysis({ onContinue, identifiers, demoMode }: ProfileAnalysisProps) {
+export function ProfileAnalysis({ onContinue, onBack, identifiers, demoMode }: ProfileAnalysisProps) {
   const [analyzing, setAnalyzing] = useState(true);
   const [progress, setProgress] = useState(0);
   const [stepIndex, setStepIndex] = useState(0);
@@ -152,7 +153,7 @@ export function ProfileAnalysis({ onContinue, identifiers, demoMode }: ProfileAn
         <div style={styles.scrollArea}>
           <header style={styles.header}>
             <div style={{ display: "flex", alignItems: "center", marginBottom: 16 }}>
-              <button style={{ ...styles.backButton, marginBottom: 0 }}>
+              <button onClick={onBack} style={{ ...styles.backButton, marginBottom: 0 }}>
                 <ChevronLeftIcon size={24} color="rgba(255,255,255,0.5)" />
               </button>
               <img
@@ -427,7 +428,7 @@ export function ProfileAnalysis({ onContinue, identifiers, demoMode }: ProfileAn
         {!analyzing && (
           <div style={styles.stickyBottom}>
             <button
-              onClick={onContinue}
+              onClick={() => onContinue({ bio, tags, findings: findings.map(f => ({ label: f.label, value: f.value, detail: f.detail })) })}
               style={{
                 ...styles.ctaButton,
                 background: COLORS.softPeriwinkle,
