@@ -85,6 +85,27 @@ function MatchProfileDetail({ match, onPlanDate, onBack }: { match: MatchProfile
         </div>
       </div>
 
+      <button
+        onClick={onPlanDate}
+        style={{
+          width: "100%",
+          height: 52,
+          borderRadius: 26,
+          border: "none",
+          background: COLORS.softPeriwinkle,
+          color: "#fff",
+          fontSize: 16,
+          fontWeight: 700,
+          fontFamily: FONT_FAMILY,
+          textTransform: "uppercase",
+          letterSpacing: 0.5,
+          cursor: "pointer",
+          marginBottom: 8,
+        }}
+      >
+        Plan a Date
+      </button>
+
       {sectionLabel("Public Profile")}
       <div style={{
         background: "#5823A5",
@@ -204,27 +225,6 @@ function MatchProfileDetail({ match, onPlanDate, onBack }: { match: MatchProfile
           </div>
         ))}
       </div>
-
-      <button
-        onClick={onPlanDate}
-        style={{
-          width: "100%",
-          height: 52,
-          borderRadius: 26,
-          border: "none",
-          background: COLORS.softPeriwinkle,
-          color: "#fff",
-          fontSize: 16,
-          fontWeight: 700,
-          fontFamily: FONT_FAMILY,
-          textTransform: "uppercase",
-          letterSpacing: 0.5,
-          cursor: "pointer",
-          marginTop: 24,
-        }}
-      >
-        Plan a Date
-      </button>
 
       {sectionLabel("Citations")}
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
