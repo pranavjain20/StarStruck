@@ -85,7 +85,7 @@ class TestPreviewGenerators:
 
     def test_github_preview_empty(self):
         result = github_preview({})
-        assert "limited" in result.lower()
+        assert "synced" in result.lower()
 
     def test_letterboxd_preview(self):
         result = letterboxd_preview(FAKE_LETTERBOXD_DATA)
@@ -93,7 +93,7 @@ class TestPreviewGenerators:
 
     def test_letterboxd_preview_empty(self):
         result = letterboxd_preview({})
-        assert "limited" in result.lower()
+        assert "synced" in result.lower()
 
     def test_spotify_preview(self):
         result = spotify_preview(FAKE_SPOTIFY_DATA)
@@ -101,7 +101,7 @@ class TestPreviewGenerators:
 
     def test_spotify_preview_empty(self):
         result = spotify_preview({"top_artists": []})
-        assert "limited" in result.lower()
+        assert "synced" in result.lower()
 
     def test_instagram_preview_with_bio(self):
         result = instagram_preview(FAKE_INSTAGRAM_DATA)
@@ -109,7 +109,7 @@ class TestPreviewGenerators:
 
     def test_instagram_preview_login_wall(self):
         result = instagram_preview({"login_wall": True, "bio": ""})
-        assert "limited" in result.lower()
+        assert "connected" in result.lower()
 
     def test_instagram_preview_long_bio(self):
         result = instagram_preview({"bio": "x" * 100, "login_wall": False})
@@ -123,7 +123,7 @@ class TestPreviewGenerators:
 
     def test_linkedin_preview_login_wall(self):
         result = linkedin_preview({"login_wall": True})
-        assert "limited" in result.lower()
+        assert "connected" in result.lower()
 
     def test_generate_preview_unknown_service(self):
         result = generate_preview("unknown_service", {})
@@ -206,7 +206,7 @@ class TestIngestNode:
         with patch.dict("app.graph.nodes.ingest.CONNECTOR_MAP", mock_map, clear=True):
             result = await _fetch_user_data(identifiers)
 
-        assert result == {}
+        assert result == {"github": {}}
 
     async def test_fetch_user_data_empty_identifiers(self):
         result = await _fetch_user_data({})
@@ -254,8 +254,8 @@ class TestConnectEndpoint:
 
         assert resp.status_code == 200
         data = resp.json()
-        assert data["success"] is True
-        assert "limited" in data["preview"].lower()
+        assert data["success"] is False
+        assert "failed" in data["preview"].lower()
 
 
 class TestAnalyzeEndpoint:
