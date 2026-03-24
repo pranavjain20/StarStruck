@@ -1,14 +1,6 @@
 import { useState, useRef, type CSSProperties } from "react";
 import { COLORS, FONT_FAMILY } from "../ConnectAccounts/styles";
-
-interface Profile {
-  name: string;
-  age: number;
-  photo: string;
-  bio: string;
-  tags: string[];
-  distance: string;
-}
+import type { Profile } from "./types";
 
 interface SwipeCardProps {
   profile: Profile;

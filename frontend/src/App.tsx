@@ -4,6 +4,7 @@ import { PhotoUpload } from "./components/PhotoUpload/PhotoUpload";
 import { ConnectAccounts } from "./components/ConnectAccounts/ConnectAccounts";
 import { ProfileAnalysis } from "./components/ProfileAnalysis/ProfileAnalysis";
 import { SwipeScreen } from "./components/SwipeScreen/SwipeScreen";
+import type { AnalysisData } from "./components/SwipeScreen/types";
 
 export default function App() {
   const [step, setStep] = useState(0);
@@ -11,7 +12,7 @@ export default function App() {
   const [userPhoto, setUserPhoto] = useState<string | null>(null);
   const [userName, setUserName] = useState("");
   const [identifiers, setIdentifiers] = useState<Record<string, string | null>>({});
-  const [analysisData, setAnalysisData] = useState<{ bio: string; tags: string[]; findings: { label: string; value: string; detail: string }[] } | null>(null);
+  const [analysisData, setAnalysisData] = useState<AnalysisData | null>(null);
 
   if (step === 0) return (
     <Landing
