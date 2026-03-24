@@ -125,18 +125,16 @@ export function ProfileAnalysis({ onContinue, onBack, identifiers, demoMode }: P
       });
     }, demoMode ? 30 : 80);
 
+    const demoTimer = demoMode
+      ? setTimeout(() => setAnalyzing(false), totalDuration)
+      : null;
+
     return () => {
       clearInterval(stepInterval);
       clearInterval(progressInterval);
+      if (demoTimer) clearTimeout(demoTimer);
     };
-  }, [analyzing]);
-
-  // In demo mode, end the analyzing state after the animation completes
-  useEffect(() => {
-    if (!demoMode || !analyzing) return;
-    const timer = setTimeout(() => setAnalyzing(false), 3000);
-    return () => clearTimeout(timer);
-  }, [demoMode, analyzing]);
+  }, [analyzing, demoMode]);
 
   const handleRegenerate = () => {
     setAnalyzing(true);
