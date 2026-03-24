@@ -135,10 +135,10 @@ export function ServiceCard({
         }}>
           {description}
         </div>
-        {isConnected && dataPreview && (
+        {dataPreview && (isConnected || dataPreview.includes("failed")) && (
           <div style={{
             fontSize: 12,
-            color: "#4ADE80",
+            color: dataPreview.includes("failed") ? COLORS.hotFuchsia : "#4ADE80",
             marginTop: 6,
           }}>
             {dataPreview}
