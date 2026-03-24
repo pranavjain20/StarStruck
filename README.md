@@ -4,7 +4,7 @@ AI-powered dating app that builds personality profiles from your real online pre
 
 **[Live Demo](https://starstruck-eta.vercel.app)**
 
-> **Note:** The backend runs on Render's free tier and may take 30-60 seconds to wake up on first request.
+> **Note:** The backend runs on Render's free tier and may take 30-60 seconds to wake up on first request. Try the **Demo Mode** button on the landing page for an instant walkthrough that skips API calls.
 
 ## How It Works
 
@@ -14,6 +14,25 @@ AI-powered dating app that builds personality profiles from your real online pre
 4. **Swipe** — see compatibility scores, AI-suggested date spots, and a conversational dating coach
 
 The connectors pull real data (repos, commit patterns, film ratings, Instagram bios), feed it into a multi-stage LLM pipeline, and produce a two-tier personality dossier — a public profile for browsing and a private profile unlocked on match.
+
+## What Works
+
+- **Full connector pipeline** — GitHub (REST API), Instagram (headless Playwright), Letterboxd (RSS/XML) all feed real data into the analysis
+- **AI personality profiling** — Gemini 2.5 Flash generates a bio, vibe tags, and findings cards from your connected accounts
+- **Swipe UI** — 12 pre-seeded profiles with gesture-based swiping and match detection
+- **Match details** — public profile, private profile (unlocked on match), cross-reference analysis with shared interests, complementary traits, and tension points
+- **Date planning** — animated venue suggestion flow with hardcoded NYC spots
+- **AI dating coach** — real-time Cupid chat powered by Gemini, personalized with both users' profiles and crossref data
+- **Demo mode** — full walkthrough without connecting any accounts
+
+## Known Limitations
+
+- **No persistence** — all state lives in memory; refreshing the page resets everything
+- **No authentication** — no user accounts, no login
+- **Pre-seeded matches** — swipe profiles and compatibility data are hardcoded (no real user pool)
+- **Instagram connector is flaky** — headless Playwright on Render's free tier can be slow (~30s) or time out
+- **Venue suggestions are static** — Google Places API isn't configured; date spots are hardcoded NYC locations
+- **Single-session architecture** — built as a hackathon prototype, not a production system
 
 ## Architecture
 
@@ -75,10 +94,22 @@ starstruck/
 │   ├── src/
 │   │   ├── App.tsx                 # Step-based flow (photo → connect → analyze → swipe)
 │   │   ├── components/
+│   │   │   ├── Landing/            # Landing page with demo mode
 │   │   │   ├── PhotoUpload/        # Camera/upload step
 │   │   │   ├── ConnectAccounts/    # Service connection UI
 │   │   │   ├── ProfileAnalysis/    # AI profile review + edit
 │   │   │   └── SwipeScreen/        # Match cards, compatibility, dating coach
+│   │   │       ├── SwipeScreen.tsx  # Main orchestrator
+│   │   │       ├── SwipeCard.tsx    # Gesture-based swipe card
+│   │   │       ├── MatchesView.tsx  # Match grid + date planning flow
+│   │   │       ├── MatchProfileDetail.tsx  # Full match profile
+│   │   │       ├── DateDetailView.tsx      # Date detail + Cupid chat
+│   │   │       ├── DatesView.tsx    # Upcoming dates list
+│   │   │       ├── ProfileView.tsx  # User profile tab
+│   │   │       ├── types.ts         # Shared interfaces
+│   │   │       ├── constants.ts     # Mock data + layout styles
+│   │   │       ├── icons.tsx        # SVG icon components
+│   │   │       └── ui.tsx           # Shared UI primitives
 │   │   └── services/
 │   │       └── api.ts              # API client
 │   └── package.json
