@@ -221,6 +221,13 @@ def async_client():
     return AsyncClient(transport=transport, base_url="http://test")
 
 
+class TestHealthEndpoint:
+    async def test_health_returns_ok(self, async_client):
+        resp = await async_client.get("/health")
+        assert resp.status_code == 200
+        assert resp.json() == {"status": "ok"}
+
+
 class TestConnectEndpoint:
     async def test_connect_github(self, async_client):
         GHCls, _ = _make_connector_cls(return_value=FAKE_GITHUB_DATA)
