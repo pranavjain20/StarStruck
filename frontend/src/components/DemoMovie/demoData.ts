@@ -6,6 +6,7 @@ export const DEMO_USER = {
     preview: "23 repos \u00b7 Python, TypeScript, PHP",
   },
   instagram: {
+    avatar: "https://avatars.githubusercontent.com/u/59959562",
     preview: "columbia cs \u00b7 building things that matter",
   },
   letterboxd: {

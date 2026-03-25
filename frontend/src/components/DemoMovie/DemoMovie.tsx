@@ -236,6 +236,7 @@ export function DemoMovie({ onExit }: { onExit: () => void }) {
                 name="Instagram" icon="📸"
                 connected={igConnected && !(currentConnecting === "instagram" && animating)}
                 preview={DEMO_USER.instagram.preview}
+                avatar={DEMO_USER.instagram.avatar}
                 accent={COLORS.hotFuchsia}
               />
               <ServiceCard
