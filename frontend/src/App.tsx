@@ -9,7 +9,6 @@ import type { AnalysisData } from "./components/SwipeScreen/types";
 
 export default function App() {
   const [step, setStep] = useState(0);
-  const [demoMode, setDemoMode] = useState(false);
   const [movieMode, setMovieMode] = useState(false);
   const [userPhoto, setUserPhoto] = useState<string | null>(null);
   const [userName, setUserName] = useState("");
@@ -21,12 +20,11 @@ export default function App() {
   if (step === 0) return (
     <Landing
       onCreateProfile={() => setStep(1)}
-      onTryDemo={() => { setDemoMode(true); setUserName("Alex"); setStep(3); }}
       onWatchDemo={() => setMovieMode(true)}
     />
   );
   if (step === 1) return <PhotoUpload onBack={() => setStep(0)} onContinue={(photos, name) => { setUserPhoto(photos[0] ?? null); setUserName(name); setStep(2); }} />;
   if (step === 2) return <ConnectAccounts onBack={() => setStep(1)} onContinue={(ids, name, photo) => { setIdentifiers(ids); if (name) setUserName(name.split(" ")[0]); if (photo && !userPhoto) setUserPhoto(photo); setStep(3); }} />;
-  if (step === 3) return <ProfileAnalysis onBack={() => setStep(2)} onContinue={(data) => { setAnalysisData(data); setStep(4); }} identifiers={identifiers} demoMode={demoMode} />;
+  if (step === 3) return <ProfileAnalysis onBack={() => setStep(2)} onContinue={(data) => { setAnalysisData(data); setStep(4); }} identifiers={identifiers} />;
   return <SwipeScreen userPhoto={userPhoto} userName={userName} analysisData={analysisData} identifiers={identifiers} />;
 }

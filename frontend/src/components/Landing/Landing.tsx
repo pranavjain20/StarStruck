@@ -5,7 +5,6 @@ const FONT_MONO = "'JetBrains Mono', 'SF Mono', monospace";
 
 interface LandingProps {
   onCreateProfile: () => void;
-  onTryDemo: () => void;
   onWatchDemo?: () => void;
 }
 
@@ -20,7 +19,7 @@ const FLOATING_ICONS = [
   { emoji: "🎯", x: 6, y: 82, size: 18, delay: 2, duration: 5.8 },
 ];
 
-export function Landing({ onCreateProfile, onTryDemo, onWatchDemo }: LandingProps) {
+export function Landing({ onCreateProfile, onWatchDemo }: LandingProps) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
     const t = setTimeout(() => setMounted(true), 50);
@@ -308,38 +307,6 @@ export function Landing({ onCreateProfile, onTryDemo, onWatchDemo }: LandingProp
               Watch Demo
             </button>
           )}
-          <button
-            onClick={onTryDemo}
-            style={{
-              width: "100%",
-              height: 56,
-              borderRadius: 28,
-              border: "1px solid rgba(187,151,255,0.2)",
-              background: "rgba(187,151,255,0.06)",
-              backdropFilter: "blur(20px)",
-              color: "rgba(187,151,255,0.85)",
-              fontSize: 16,
-              fontWeight: 600,
-              fontFamily: FONT_FAMILY,
-              letterSpacing: 0.3,
-              cursor: "pointer",
-              transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "rgba(187,151,255,0.12)";
-              e.currentTarget.style.borderColor = "rgba(187,151,255,0.4)";
-              e.currentTarget.style.transform = "translateY(-1px)";
-              e.currentTarget.style.color = "rgba(187,151,255,1)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "rgba(187,151,255,0.06)";
-              e.currentTarget.style.borderColor = "rgba(187,151,255,0.2)";
-              e.currentTarget.style.transform = "translateY(0)";
-              e.currentTarget.style.color = "rgba(187,151,255,0.85)";
-            }}
-          >
-            Try Demo
-          </button>
         </div>
 
         {/* Footer note */}
