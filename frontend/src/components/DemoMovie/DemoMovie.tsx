@@ -44,7 +44,7 @@ const SCENES: Scene[] = [
   { duration: 7000, label: "Swipe & Match" },
   { duration: 3500, label: "Match Details" },
   { duration: 4000, label: "AI Coach" },
-  { duration: 3500, label: "Plan a Date" },
+  { duration: 5000, label: "Plan a Date" },
   { duration: 3000, label: "" },
 ];
 
@@ -314,15 +314,6 @@ export function DemoMovie({ onExit }: { onExit: () => void }) {
         const card2Visible = sceneProgress >= 0.35 && sceneProgress < 0.7;
         const card2X = card2Exit ? ((sceneProgress - 0.6) / 0.1) * 500 : 0;
 
-        // Stamps appear on button press, stay through exit
-        const nopeStamp = sceneProgress >= 0.2 && sceneProgress < 0.35;
-        const likeStamp = sceneProgress >= 0.55 && sceneProgress < 0.7;
-
-        const stampBase: React.CSSProperties = {
-          position: "absolute", top: 40, fontSize: 36, fontWeight: 800, fontFamily: FONT_FAMILY,
-          padding: "6px 16px", borderRadius: 8, border: "3px solid", letterSpacing: 2, textTransform: "uppercase",
-        };
-
         const btnStyle = (color: string, pressed: boolean): React.CSSProperties => ({
           width: 56, height: 56, borderRadius: 28,
           background: pressed ? `${color}40` : `${color}15`,
@@ -350,9 +341,6 @@ export function DemoMovie({ onExit }: { onExit: () => void }) {
                     <span style={{ fontSize: 28, fontWeight: 800, color: "#fff" }}>Ava</span>
                     <span style={{ fontSize: 22, fontWeight: 400, color: "rgba(255,255,255,0.7)", marginLeft: 8 }}>26</span>
                   </div>
-                  {nopeStamp && (
-                    <div style={{ ...stampBase, right: 24, color: COLORS.hotFuchsia, borderColor: COLORS.hotFuchsia, transform: "rotate(15deg)" }}>Nope</div>
-                  )}
                 </div>
               )}
 
@@ -370,9 +358,6 @@ export function DemoMovie({ onExit }: { onExit: () => void }) {
                     <span style={{ fontSize: 28, fontWeight: 800, color: "#fff" }}>{DEMO_MATCH.name}</span>
                     <span style={{ fontSize: 22, fontWeight: 400, color: "rgba(255,255,255,0.7)", marginLeft: 8 }}>{DEMO_MATCH.age}</span>
                   </div>
-                  {likeStamp && (
-                    <div style={{ ...stampBase, left: 24, color: COLORS.limeCreem, borderColor: COLORS.limeCreem, transform: "rotate(-15deg)" }}>Like</div>
-                  )}
                 </div>
               )}
             </div>
