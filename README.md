@@ -103,6 +103,7 @@ starstruck/
 │   │   │       ├── SwipeCard.tsx    # Gesture-based swipe card
 │   │   │       ├── MatchesView.tsx  # Match grid + date planning flow
 │   │   │       ├── MatchProfileDetail.tsx  # Full match profile
+│   │   │       ├── CoachView.tsx     # AI dating coach tab + chat
 │   │   │       ├── DateDetailView.tsx      # Date detail + Cupid chat
 │   │   │       ├── DatesView.tsx    # Upcoming dates list
 │   │   │       ├── ProfileView.tsx  # User profile tab
