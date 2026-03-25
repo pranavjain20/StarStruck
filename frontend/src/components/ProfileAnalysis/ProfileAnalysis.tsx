@@ -8,7 +8,6 @@ interface ProfileAnalysisProps {
   onContinue: (data: { bio: string; tags: string[]; findings: { label: string; value: string; detail: string }[] }) => void;
   onBack?: () => void;
   identifiers?: Record<string, string | null>;
-  demoMode?: boolean;
   userPhoto?: string | null;
   userName?: string;
 }
@@ -65,7 +64,7 @@ function RefreshIcon({ size = 18, color = "currentColor" }: { size?: number; col
   );
 }
 
-export function ProfileAnalysis({ onContinue, onBack, identifiers, demoMode, userPhoto, userName }: ProfileAnalysisProps) {
+export function ProfileAnalysis({ onContinue, onBack, identifiers, userPhoto, userName }: ProfileAnalysisProps) {
   const [analyzing, setAnalyzing] = useState(true);
   const [progress, setProgress] = useState(0);
   const [stepIndex, setStepIndex] = useState(0);
@@ -77,7 +76,7 @@ export function ProfileAnalysis({ onContinue, onBack, identifiers, demoMode, use
   const fetchedRef = useRef(false);
 
   useEffect(() => {
-    if (demoMode || !identifiers || fetchedRef.current) return;
+    if (!identifiers || fetchedRef.current) return;
     fetchedRef.current = true;
 
     analyzeUser(identifiers).then((result: AnalysisResult) => {
@@ -105,7 +104,7 @@ export function ProfileAnalysis({ onContinue, onBack, identifiers, demoMode, use
   useEffect(() => {
     if (!analyzing) return;
 
-    const totalDuration = demoMode ? 3000 : 8000;
+    const totalDuration = 8000;
     const stepDuration = totalDuration / ANALYSIS_STEPS.length;
     const stepInterval = setInterval(() => {
       setStepIndex((prev) => {
@@ -125,18 +124,13 @@ export function ProfileAnalysis({ onContinue, onBack, identifiers, demoMode, use
         }
         return prev + 1;
       });
-    }, demoMode ? 30 : 80);
-
-    const demoTimer = demoMode
-      ? setTimeout(() => setAnalyzing(false), totalDuration)
-      : null;
+    }, 80);
 
     return () => {
       clearInterval(stepInterval);
       clearInterval(progressInterval);
-      if (demoTimer) clearTimeout(demoTimer);
     };
-  }, [analyzing, demoMode]);
+  }, [analyzing]);
 
   const handleRegenerate = () => {
     setAnalyzing(true);

@@ -15,13 +15,12 @@ beforeEach(() => {
 });
 
 describe("ProfileAnalysis", () => {
-  it("shows loading state initially in real mode", () => {
+  it("shows loading state initially", () => {
     mockAnalyze.mockReturnValue(new Promise(() => {})); // never resolves
 
     render(
       <ProfileAnalysis
         identifiers={{ github: "testuser" }}
-        demoMode={false}
         onContinue={vi.fn()}
         onBack={vi.fn()}
       />,
@@ -30,32 +29,7 @@ describe("ProfileAnalysis", () => {
     expect(screen.getByText("Step 3 of 4")).toBeInTheDocument();
   });
 
-  it("demo mode completes without API call", async () => {
-    const onContinue = vi.fn();
-
-    render(
-      <ProfileAnalysis
-        identifiers={{}}
-        demoMode={true}
-        onContinue={onContinue}
-        onBack={vi.fn()}
-      />,
-    );
-
-    // In demo mode, analyzing finishes after 3s
-    // The analysis should complete and show results
-    await waitFor(
-      () => {
-        expect(screen.getByText("Continue")).toBeInTheDocument();
-      },
-      { timeout: 5000 },
-    );
-
-    // Should NOT have called the real API
-    expect(mockAnalyze).not.toHaveBeenCalled();
-  });
-
-  it("calls analyzeUser with identifiers in real mode", async () => {
+  it("calls analyzeUser with identifiers", async () => {
     mockAnalyze.mockResolvedValue({
       bio: "Night owl coder who loves jazz",
       tags: ["tech", "music", "film"],
@@ -67,7 +41,6 @@ describe("ProfileAnalysis", () => {
     render(
       <ProfileAnalysis
         identifiers={{ github: "testuser", instagram: null }}
-        demoMode={false}
         onContinue={vi.fn()}
         onBack={vi.fn()}
       />,
@@ -77,7 +50,6 @@ describe("ProfileAnalysis", () => {
       expect(mockAnalyze).toHaveBeenCalledWith({ github: "testuser", instagram: null });
     });
 
-    // After API response, bio should be displayed
     await waitFor(() => {
       expect(screen.getByText(/Night owl coder/)).toBeInTheDocument();
     });
@@ -98,7 +70,6 @@ describe("ProfileAnalysis", () => {
     render(
       <ProfileAnalysis
         identifiers={{ github: "testuser" }}
-        demoMode={false}
         onContinue={vi.fn()}
         onBack={vi.fn()}
       />,

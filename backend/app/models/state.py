@@ -8,10 +8,8 @@ class UserDataBundle(TypedDict, total=False):
     spotify: dict[str, Any]
     letterboxd: dict[str, Any]
     github: dict[str, Any]
-    books: dict[str, Any]
     instagram: dict[str, Any]
     linkedin: dict[str, Any]
-    places: dict[str, Any]
 
 
 class UserProfile(TypedDict, total=False):
