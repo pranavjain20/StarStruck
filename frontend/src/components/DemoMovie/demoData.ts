@@ -1,12 +1,12 @@
 export const DEMO_USER = {
   name: "Pranav",
-  photo: "https://avatars.githubusercontent.com/u/59959562",
+  photo: "https://avatars.githubusercontent.com/u/60300212?v=4",
   github: {
-    avatar: "https://avatars.githubusercontent.com/u/59959562",
+    avatar: "https://avatars.githubusercontent.com/u/60300212?v=4",
     preview: "23 repos \u00b7 Python, TypeScript, PHP",
   },
   instagram: {
-    avatar: "https://avatars.githubusercontent.com/u/59959562",
+    avatar: "https://avatars.githubusercontent.com/u/60300212?v=4",
     preview: "columbia cs \u00b7 building things that matter",
   },
   letterboxd: {
