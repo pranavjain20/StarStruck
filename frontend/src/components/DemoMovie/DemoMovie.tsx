@@ -35,17 +35,17 @@ interface Scene {
 }
 
 const SCENES: Scene[] = [
-  { duration: 3000, label: "Upload Photo" },
-  { duration: 3000, label: "Connect GitHub" },
-  { duration: 2500, label: "Connect Instagram" },
-  { duration: 2500, label: "Connect Letterboxd" },
-  { duration: 4000, label: "AI Analysis" },
-  { duration: 3500, label: "Your Profile" },
-  { duration: 7000, label: "Swipe & Match" },
-  { duration: 3500, label: "Match Details" },
-  { duration: 4000, label: "AI Coach" },
-  { duration: 5000, label: "Plan a Date" },
-  { duration: 3000, label: "" },
+  { duration: 4000, label: "Upload Photo" },
+  { duration: 4000, label: "Connect GitHub" },
+  { duration: 3500, label: "Connect Instagram" },
+  { duration: 3500, label: "Connect Letterboxd" },
+  { duration: 5000, label: "AI Analysis" },
+  { duration: 4500, label: "Your Profile" },
+  { duration: 8000, label: "Swipe & Match" },
+  { duration: 4500, label: "Match Details" },
+  { duration: 5000, label: "AI Coach" },
+  { duration: 6000, label: "Plan a Date" },
+  { duration: 4000, label: "" },
 ];
 
 const TOTAL_DURATION = SCENES.reduce((a, s) => a + s.duration, 0);
